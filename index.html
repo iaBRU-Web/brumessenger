@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brumessenger - Real-Time Chat</title>
+    <title>Brumessenger</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
 
 </head>
 <body>
-    <!-- Authentication Container -->
     <div id="authContainer">
         <div class="auth-header">
             <h1>🚀 Brumessenger</h1>
@@ -21,11 +20,11 @@
         <div id="loginForm">
             <div class="form-group">
                 <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" placeholder="Enter your username" autocomplete="username">
+                <input type="text" id="loginUsername" placeholder="Enter your username">
             </div>
             <div class="form-group">
                 <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+                <input type="password" id="loginPassword" placeholder="Enter your password">
             </div>
             <button class="btn btn-primary" id="loginBtn">Login</button>
             <button class="btn btn-secondary" id="showSignupBtn">Create Account</button>
@@ -34,22 +33,21 @@
         <div id="signupForm" class="hidden">
             <div class="form-group">
                 <label for="signupUsername">Username</label>
-                <input type="text" id="signupUsername" placeholder="Choose a username (min 3 characters)" autocomplete="username">
+                <input type="text" id="signupUsername" placeholder="Choose a username (min 3 characters)">
             </div>
             <div class="form-group">
                 <label for="signupPassword">Password</label>
-                <input type="password" id="signupPassword" placeholder="Choose a password" autocomplete="new-password">
+                <input type="password" id="signupPassword" placeholder="Choose a password">
             </div>
             <div class="form-group">
                 <label for="signupPasswordConfirm">Confirm Password</label>
-                <input type="password" id="signupPasswordConfirm" placeholder="Confirm your password" autocomplete="new-password">
+                <input type="password" id="signupPasswordConfirm" placeholder="Confirm your password">
             </div>
             <button class="btn btn-primary" id="signupBtn">Create Account</button>
             <button class="btn btn-secondary" id="showLoginBtn">Back to Login</button>
         </div>
     </div>
 
-    <!-- Chat Container -->
     <div id="chatContainer">
         <div class="chat-header">
             <h2>💬 Brumessenger</h2>
@@ -63,16 +61,12 @@
         </div>
 
         <div class="chat-body">
-            <!-- Sidebar -->
             <div class="sidebar">
                 <div class="search-container">
                     <input type="text" class="search-input" id="userSearch" placeholder="🔍 Search users...">
                 </div>
-                <div class="users-list" id="usersList">
-                    <!-- Users will be loaded here -->
-                </div>
+                <div class="users-list" id="usersList"></div>
                 
-                <!-- Advertisement -->
                 <div class="ad-container">
                     <h3>🛡️ HostedScan</h3>
                     <p>Professional Vulnerability Scanner</p>
@@ -80,11 +74,8 @@
                 </div>
             </div>
 
-            <!-- Chat Area -->
             <div class="chat-area">
-                <div class="messages-container" id="messagesContainer">
-                    <!-- Messages will appear here -->
-                </div>
+                <div class="messages-container" id="messagesContainer"></div>
                 <div class="message-input-container">
                     <div class="message-input-wrapper">
                         <textarea class="message-input" id="messageInput" placeholder="Type your message..." rows="1"></textarea>
@@ -94,13 +85,9 @@
             </div>
         </div>
     </div>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -111,7 +98,6 @@
             padding: 20px;
         }
 
-        /* Auth Container */
         #authContainer {
             background: white;
             padding: 40px;
@@ -119,18 +105,6 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             max-width: 400px;
             width: 100%;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .auth-header {
@@ -166,95 +140,6 @@
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
-            width: 100%;<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brumessenger - Real-Time Chat</title>
-    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        /* Auth Container */
-        #authContainer {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 400px;
-            width: 100%;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .auth-header h1 {
-            color: #667eea;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .auth-header p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
         }
 
         .form-group input:focus {
@@ -270,7 +155,6 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
             margin-bottom: 10px;
         }
 
@@ -281,8 +165,6 @@
 
         .btn-primary:hover {
             background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-secondary {
@@ -290,31 +172,24 @@
             color: #667eea;
         }
 
-        .btn-secondary:hover {
-            background: #e0e0e0;
+        .error-message, .success-message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
         }
 
         .error-message {
             background: #fee;
             color: #c33;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            display: none;
         }
 
         .success-message {
             background: #efe;
             color: #3c3;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            display: none;
         }
 
-        /* Chat Container */
         #chatContainer {
             background: white;
             border-radius: 20px;
@@ -369,7 +244,6 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.3s;
         }
 
         .btn-logout:hover {
@@ -382,7 +256,6 @@
             height: calc(100% - 80px);
         }
 
-        /* Sidebar */
         .sidebar {
             width: 300px;
             border-right: 1px solid #e0e0e0;
@@ -419,7 +292,6 @@
             margin-bottom: 5px;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -455,7 +327,6 @@
             color: #666;
         }
 
-        /* Chat Area */
         .chat-area {
             flex: 1;
             display: flex;
@@ -471,18 +342,6 @@
 
         .message {
             margin-bottom: 15px;
-            animation: messageSlide 0.3s ease;
-        }
-
-        @keyframes messageSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .message-header {
@@ -525,7 +384,6 @@
             margin: 10px 0;
         }
 
-        /* Message Input */
         .message-input-container {
             padding: 20px;
             border-top: 1px solid #e0e0e0;
@@ -561,22 +419,17 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            transition: all 0.3s;
         }
 
         .btn-send:hover {
             background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-send:disabled {
             background: #ccc;
             cursor: not-allowed;
-            transform: none;
         }
 
-        /* Advertisement */
         .ad-container {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             padding: 15px;
@@ -604,30 +457,8 @@
             text-decoration: none;
             font-weight: 600;
             display: inline-block;
-            transition: all 0.3s;
         }
 
-        .ad-container a:hover {
-            transform: scale(1.05);
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .message-content {
-                max-width: 90%;
-            }
-
-            #chatContainer {
-                height: 100vh;
-                border-radius: 0;
-            }
-        }
-
-        /* Loading Spinner */
         .spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #667eea;
@@ -647,111 +478,25 @@
         .hidden {
             display: none !important;
         }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .message-content { max-width: 90%; }
+            #chatContainer { height: 100vh; border-radius: 0; }
+        }
     </style>
-</head>
-<body>
-    <!-- Authentication Container -->
-    <div id="authContainer">
-        <div class="auth-header">
-            <h1>🚀 Brumessenger</h1>
-            <p>Real-time chat powered by Ably</p>
-        </div>
-
-        <div class="error-message" id="authError"></div>
-        <div class="success-message" id="authSuccess"></div>
-
-        <div id="loginForm">
-            <div class="form-group">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" placeholder="Enter your username" autocomplete="username">
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
-            </div>
-            <button class="btn btn-primary" id="loginBtn">Login</button>
-            <button class="btn btn-secondary" id="showSignupBtn">Create Account</button>
-        </div>
-
-        <div id="signupForm" class="hidden">
-            <div class="form-group">
-                <label for="signupUsername">Username</label>
-                <input type="text" id="signupUsername" placeholder="Choose a username (min 3 characters)" autocomplete="username">
-            </div>
-            <div class="form-group">
-                <label for="signupPassword">Password</label>
-                <input type="password" id="signupPassword" placeholder="Choose a password" autocomplete="new-password">
-            </div>
-            <div class="form-group">
-                <label for="signupPasswordConfirm">Confirm Password</label>
-                <input type="password" id="signupPasswordConfirm" placeholder="Confirm your password" autocomplete="new-password">
-            </div>
-            <button class="btn btn-primary" id="signupBtn">Create Account</button>
-            <button class="btn btn-secondary" id="showLoginBtn">Back to Login</button>
-        </div>
-    </div>
-
-    <!-- Chat Container -->
-    <div id="chatContainer">
-        <div class="chat-header">
-            <h2>💬 Brumessenger</h2>
-            <div class="header-info">
-                <div class="user-badge" id="currentUserBadge">
-                    <span id="currentUsername"></span>
-                    <span id="adminBadge" class="admin-badge hidden">ADMIN</span>
-                </div>
-                <button class="btn-logout" id="logoutBtn">Logout</button>
-            </div>
-        </div>
-
-        <div class="chat-body">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="search-container">
-                    <input type="text" class="search-input" id="userSearch" placeholder="🔍 Search users...">
-                </div>
-                <div class="users-list" id="usersList">
-                    <!-- Users will be loaded here -->
-                </div>
-                
-                <!-- Advertisement -->
-                <div class="ad-container">
-                    <h3>🛡️ HostedScan</h3>
-                    <p>Professional Vulnerability Scanner</p>
-                    <a href="https://hostedscan.com" target="_blank">Learn More</a>
-                </div>
-            </div>
-
-            <!-- Chat Area -->
-            <div class="chat-area">
-                <div class="messages-container" id="messagesContainer">
-                    <!-- Messages will appear here -->
-                </div>
-                <div class="message-input-container">
-                    <div class="message-input-wrapper">
-                        <textarea class="message-input" id="messageInput" placeholder="Type your message..." rows="1"></textarea>
-                        <button class="btn-send" id="sendBtn">Send</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Configuration
         const CONFIG = {
             ABLY_KEY: 'UNMYag.VcluoA:gkmv1VpeHWmrC7W0NJXRcdQZaRAJP0Z5uAj_dooMjuc',
             ABLY_CHANNEL: 'BRUCHANNEL',
-            BACKEND_URL: 'https://brumessenger-backend.vercel.app/api' // Change this to your backend URL
+            BACKEND_URL: 'https://brumessenger-backend.vercel.app/api'
         };
 
-        // State
         let currentUser = null;
         let ablyClient = null;
         let channel = null;
         let allUsers = [];
 
-        // DOM Elements
         const authContainer = document.getElementById('authContainer');
         const chatContainer = document.getElementById('chatContainer');
         const loginForm = document.getElementById('loginForm');
@@ -766,16 +511,13 @@
         const currentUsername = document.getElementById('currentUsername');
         const adminBadge = document.getElementById('adminBadge');
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Check if user is logged in
             const savedUser = localStorage.getItem('brumessenger_user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 initializeChat();
             }
 
-            // Event Listeners
             document.getElementById('loginBtn').addEventListener('click', handleLogin);
             document.getElementById('signupBtn').addEventListener('click', handleSignup);
             document.getElementById('showSignupBtn').addEventListener('click', () => {
@@ -798,14 +540,12 @@
             });
             userSearch.addEventListener('input', filterUsers);
 
-            // Auto-resize textarea
             messageInput.addEventListener('input', function() {
                 this.style.height = 'auto';
                 this.style.height = Math.min(this.scrollHeight, 150) + 'px';
             });
         });
 
-        // Authentication Functions
         async function handleLogin() {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -836,7 +576,6 @@
                 }
             } catch (error) {
                 showError('Connection error. Please try again.');
-                console.error('Login error:', error);
             } finally {
                 hideLoading('loginBtn');
             }
@@ -886,7 +625,6 @@
                 }
             } catch (error) {
                 showError('Connection error. Please try again.');
-                console.error('Signup error:', error);
             } finally {
                 hideLoading('signupBtn');
             }
@@ -894,21 +632,16 @@
 
         async function handleLogout() {
             if (currentUser) {
-                // Update status to offline
                 try {
                     await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            username: currentUser.username, 
-                            status: 'offline' 
-                        })
+                        body: JSON.stringify({ username: currentUser.username, status: 'offline' })
                     });
                 } catch (error) {
                     console.error('Status update error:', error);
                 }
 
-                // Send leave message
                 if (channel) {
                     channel.publish('user-action', {
                         action: 'leave',
@@ -918,11 +651,7 @@
                 }
             }
 
-            // Cleanup
-            if (ablyClient) {
-                ablyClient.close();
-            }
-
+            if (ablyClient) ablyClient.close();
             localStorage.removeItem('brumessenger_user');
             currentUser = null;
             chatContainer.style.display = 'none';
@@ -931,49 +660,37 @@
             clearAuthInputs();
         }
 
-        // Chat Functions
         async function initializeChat() {
             authContainer.style.display = 'none';
             chatContainer.style.display = 'block';
 
-            // Update UI
             currentUsername.textContent = currentUser.username;
             if (currentUser.isAdmin) {
                 adminBadge.classList.remove('hidden');
             }
 
-            // Initialize Ably
             ablyClient = new Ably.Realtime(CONFIG.ABLY_KEY);
             channel = ablyClient.channels.get(CONFIG.ABLY_CHANNEL);
 
-            // Load message history
             await loadMessageHistory();
 
-            // Subscribe to new messages
             channel.subscribe('chat-message', (message) => {
                 displayMessage(message.data);
             });
 
-            // Subscribe to user actions
             channel.subscribe('user-action', (message) => {
                 displaySystemMessage(message.data);
             });
 
-            // Send join message
             channel.publish('user-action', {
                 action: 'join',
                 username: currentUser.username,
                 timestamp: new Date().toISOString()
             });
 
-            // Update status to online
             updateStatus('online');
-
-            // Load users
             loadUsers();
-
-            // Update status periodically
-            setInterval(() => updateStatus('online'), 60000); // Every minute
+            setInterval(() => updateStatus('online'), 60000);
         }
 
         async function loadMessageHistory() {
@@ -1023,14 +740,12 @@
         function displayMessage(data, animate = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
-            if (!animate) messageDiv.style.animation = 'none';
 
             const time = new Date(data.timestamp).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
 
-            // Convert URLs to clickable links
             const textWithLinks = linkify(data.text);
 
             messageDiv.innerHTML = `
@@ -1060,7 +775,6 @@
             messagesContainer.appendChild(messageDiv);
             scrollToBottom();
 
-            // Reload users when someone joins/leaves
             loadUsers();
         }
 
@@ -1116,17 +830,13 @@
                 await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        username: currentUser.username, 
-                        status: status 
-                    })
+                    body: JSON.stringify({ username: currentUser.username, status: status })
                 });
             } catch (error) {
                 console.error('Status update error:', error);
             }
         }
 
-        // Utility Functions
         function linkify(text) {
             const urlRegex = /(https?:\/\/[^\s]+)/g;
             return escapeHtml(text).replace(urlRegex, (url) => {
@@ -1144,7 +854,7 @@
             const now = new Date();
             const lastActiveDate = new Date(lastActive);
             const diffMinutes = (now - lastActiveDate) / 1000 / 60;
-            return diffMinutes < 5; // Consider online if active within 5 minutes
+            return diffMinutes < 5;
         }
 
         function scrollToBottom() {
@@ -1189,870 +899,12 @@
             if (spinner) spinner.remove();
         }
 
-        // Handle page visibility for status updates
         document.addEventListener('visibilitychange', () => {
             if (currentUser) {
                 updateStatus(document.hidden ? 'away' : 'online');
             }
         });
 
-        // Handle page unload
-        window.addEventListener('beforeunload', () => {
-            if (currentUser && channel) {
-                channel.publish('user-action', {
-                    action: 'leave',
-                    username: currentUser.username,
-                    timestamp: new Date().toISOString()
-                });
-            }
-        });
-    </script>
-</body>
-</html>
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 10px;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: #f5f5f5;
-            color: #667eea;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
-
-        .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .success-message {
-            background: #efe;
-            color: #3c3;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            display: none;
-        }
-
-        /* Chat Container */
-        #chatContainer {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 1200px;
-            width: 100%;
-            height: 90vh;
-            display: none;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-header h2 {
-            font-size: 24px;
-        }
-
-        .header-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-
-        .admin-badge {
-            background: #ffd700;
-            color: #333;
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .btn-logout {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 2px solid white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: white;
-            color: #667eea;
-        }
-
-        .chat-body {
-            display: flex;
-            height: calc(100% - 80px);
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 300px;
-            border-right: 1px solid #e0e0e0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .search-container {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .users-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .user-item {
-            padding: 12px;
-            margin-bottom: 5px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-item:hover {
-            background: #f5f5f5;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #ccc;
-        }
-
-        .status-dot.online {
-            background: #4caf50;
-            box-shadow: 0 0 5px #4caf50;
-        }
-
-        .user-info {
-            flex: 1;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .user-status {
-            font-size: 12px;
-            color: #666;
-        }
-
-        /* Chat Area */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #f9f9f9;
-        }
-
-        .message {
-            margin-bottom: 15px;
-            animation: messageSlide 0.3s ease;
-        }
-
-        @keyframes messageSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 5px;
-        }
-
-        .message-sender {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 14px;
-        }
-
-        .message-time {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .message-content {
-            background: white;
-            padding: 12px 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            max-width: 70%;
-            word-wrap: break-word;
-        }
-
-        .message-content a {
-            color: #667eea;
-            text-decoration: underline;
-        }
-
-        .system-message {
-            text-align: center;
-            color: #999;
-            font-size: 12px;
-            font-style: italic;
-            margin: 10px 0;
-        }
-
-        /* Message Input */
-        .message-input-container {
-            padding: 20px;
-            border-top: 1px solid #e0e0e0;
-            background: white;
-        }
-
-        .message-input-wrapper {
-            display: flex;
-            gap: 10px;
-        }
-
-        .message-input {
-            flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 14px;
-            resize: none;
-            font-family: inherit;
-        }
-
-        .message-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn-send {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-send:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-send:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Advertisement */
-        .ad-container {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px;
-            color: white;
-            text-align: center;
-        }
-
-        .ad-container h3 {
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .ad-container p {
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-        .ad-container a {
-            background: white;
-            color: #f5576c;
-            padding: 8px 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            transition: all 0.3s;
-        }
-
-        .ad-container a:hover {
-            transform: scale(1.05);
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .message-content {
-                max-width: 90%;
-            }
-
-            #chatContainer {
-                height: 100vh;
-                border-radius: 0;
-            }
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-left: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .hidden {
-            display: none !important;
-        }
-    </style>
-    <script>
-        // Configuration
-        const CONFIG = {
-            ABLY_KEY: 'UNMYag.VcluoA:gkmv1VpeHWmrC7W0NJXRcdQZaRAJP0Z5uAj_dooMjuc',
-            ABLY_CHANNEL: 'BRUCHANNEL',
-            BACKEND_URL: 'https://brumessenger-backend.vercel.app/api' // Change this to your backend URL
-        };
-
-        // State
-        let currentUser = null;
-        let ablyClient = null;
-        let channel = null;
-        let allUsers = [];
-
-        // DOM Elements
-        const authContainer = document.getElementById('authContainer');
-        const chatContainer = document.getElementById('chatContainer');
-        const loginForm = document.getElementById('loginForm');
-        const signupForm = document.getElementById('signupForm');
-        const authError = document.getElementById('authError');
-        const authSuccess = document.getElementById('authSuccess');
-        const messagesContainer = document.getElementById('messagesContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const usersList = document.getElementById('usersList');
-        const userSearch = document.getElementById('userSearch');
-        const currentUsername = document.getElementById('currentUsername');
-        const adminBadge = document.getElementById('adminBadge');
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if user is logged in
-            const savedUser = localStorage.getItem('brumessenger_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                initializeChat();
-            }
-
-            // Event Listeners
-            document.getElementById('loginBtn').addEventListener('click', handleLogin);
-            document.getElementById('signupBtn').addEventListener('click', handleSignup);
-            document.getElementById('showSignupBtn').addEventListener('click', () => {
-                loginForm.classList.add('hidden');
-                signupForm.classList.remove('hidden');
-                clearMessages();
-            });
-            document.getElementById('showLoginBtn').addEventListener('click', () => {
-                signupForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-                clearMessages();
-            });
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-            sendBtn.addEventListener('click', sendMessage);
-            messageInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-            userSearch.addEventListener('input', filterUsers);
-
-            // Auto-resize textarea
-            messageInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
-            });
-        });
-
-        // Authentication Functions
-        async function handleLogin() {
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
-            if (!username || !password) {
-                showError('Please enter username and password');
-                return;
-            }
-
-            showLoading('loginBtn');
-
-            try {
-                const response = await fetch(`${CONFIG.BACKEND_URL}/auth`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'login', username, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    currentUser = data.user;
-                    localStorage.setItem('brumessenger_user', JSON.stringify(currentUser));
-                    showSuccess('Login successful!');
-                    setTimeout(() => initializeChat(), 1000);
-                } else {
-                    showError(data.error || 'Login failed');
-                }
-            } catch (error) {
-                showError('Connection error. Please try again.');
-                console.error('Login error:', error);
-            } finally {
-                hideLoading('loginBtn');
-            }
-        }
-
-        async function handleSignup() {
-            const username = document.getElementById('signupUsername').value.trim();
-            const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('signupPasswordConfirm').value;
-
-            if (!username || !password || !confirmPassword) {
-                showError('Please fill in all fields');
-                return;
-            }
-
-            if (username.length < 3) {
-                showError('Username must be at least 3 characters');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showError('Passwords do not match');
-                return;
-            }
-
-            showLoading('signupBtn');
-
-            try {
-                const response = await fetch(`${CONFIG.BACKEND_URL}/auth`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'signup', username, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    showSuccess('Account created! Redirecting to login...');
-                    setTimeout(() => {
-                        signupForm.classList.add('hidden');
-                        loginForm.classList.remove('hidden');
-                        document.getElementById('loginUsername').value = username;
-                        clearMessages();
-                    }, 1500);
-                } else {
-                    showError(data.error || 'Signup failed');
-                }
-            } catch (error) {
-                showError('Connection error. Please try again.');
-                console.error('Signup error:', error);
-            } finally {
-                hideLoading('signupBtn');
-            }
-        }
-
-        async function handleLogout() {
-            if (currentUser) {
-                // Update status to offline
-                try {
-                    await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            username: currentUser.username, 
-                            status: 'offline' 
-                        })
-                    });
-                } catch (error) {
-                    console.error('Status update error:', error);
-                }
-
-                // Send leave message
-                if (channel) {
-                    channel.publish('user-action', {
-                        action: 'leave',
-                        username: currentUser.username,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-            }
-
-            // Cleanup
-            if (ablyClient) {
-                ablyClient.close();
-            }
-
-            localStorage.removeItem('brumessenger_user');
-            currentUser = null;
-            chatContainer.style.display = 'none';
-            authContainer.style.display = 'block';
-            messagesContainer.innerHTML = '';
-            clearAuthInputs();
-        }
-
-        // Chat Functions
-        async function initializeChat() {
-            authContainer.style.display = 'none';
-            chatContainer.style.display = 'block';
-
-            // Update UI
-            currentUsername.textContent = currentUser.username;
-            if (currentUser.isAdmin) {
-                adminBadge.classList.remove('hidden');
-            }
-
-            // Initialize Ably
-            ablyClient = new Ably.Realtime(CONFIG.ABLY_KEY);
-            channel = ablyClient.channels.get(CONFIG.ABLY_CHANNEL);
-
-            // Load message history
-            await loadMessageHistory();
-
-            // Subscribe to new messages
-            channel.subscribe('chat-message', (message) => {
-                displayMessage(message.data);
-            });
-
-            // Subscribe to user actions
-            channel.subscribe('user-action', (message) => {
-                displaySystemMessage(message.data);
-            });
-
-            // Send join message
-            channel.publish('user-action', {
-                action: 'join',
-                username: currentUser.username,
-                timestamp: new Date().toISOString()
-            });
-
-            // Update status to online
-            updateStatus('online');
-
-            // Load users
-            loadUsers();
-
-            // Update status periodically
-            setInterval(() => updateStatus('online'), 60000); // Every minute
-        }
-
-        async function loadMessageHistory() {
-            try {
-                const history = await channel.history({ limit: 50 });
-                const messages = [];
-                
-                history.items.forEach(item => {
-                    if (item.name === 'chat-message') {
-                        messages.push(item.data);
-                    }
-                });
-
-                messages.reverse().forEach(msg => displayMessage(msg, false));
-                scrollToBottom();
-            } catch (error) {
-                console.error('Error loading history:', error);
-            }
-        }
-
-        async function sendMessage() {
-            const text = messageInput.value.trim();
-            if (!text) return;
-
-            sendBtn.disabled = true;
-
-            const message = {
-                sender: currentUser.username,
-                text: text,
-                timestamp: new Date().toISOString(),
-                isAdmin: currentUser.isAdmin || false
-            };
-
-            try {
-                await channel.publish('chat-message', message);
-                messageInput.value = '';
-                messageInput.style.height = 'auto';
-            } catch (error) {
-                console.error('Error sending message:', error);
-                showError('Failed to send message');
-            } finally {
-                sendBtn.disabled = false;
-                messageInput.focus();
-            }
-        }
-
-        function displayMessage(data, animate = true) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            if (!animate) messageDiv.style.animation = 'none';
-
-            const time = new Date(data.timestamp).toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            // Convert URLs to clickable links
-            const textWithLinks = linkify(data.text);
-
-            messageDiv.innerHTML = `
-                <div class="message-header">
-                    <span class="message-sender">${escapeHtml(data.sender)}</span>
-                    ${data.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
-                    <span class="message-time">${time}</span>
-                </div>
-                <div class="message-content">${textWithLinks}</div>
-            `;
-
-            messagesContainer.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        function displaySystemMessage(data) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'system-message';
-
-            const action = data.action === 'join' ? 'joined the chat' : 'left the chat';
-            const time = new Date(data.timestamp).toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            messageDiv.textContent = `${data.username} ${action} at ${time}`;
-            messagesContainer.appendChild(messageDiv);
-            scrollToBottom();
-
-            // Reload users when someone joins/leaves
-            loadUsers();
-        }
-
-        async function loadUsers() {
-            try {
-                const response = await fetch(`${CONFIG.BACKEND_URL}/get-users`);
-                const data = await response.json();
-
-                if (data.success) {
-                    allUsers = data.users;
-                    displayUsers(allUsers);
-                }
-            } catch (error) {
-                console.error('Error loading users:', error);
-            }
-        }
-
-        function displayUsers(users) {
-            usersList.innerHTML = '';
-
-            users.forEach(user => {
-                const userDiv = document.createElement('div');
-                userDiv.className = 'user-item';
-
-                const isOnline = isUserOnline(user.lastActive);
-                const statusClass = isOnline ? 'online' : '';
-
-                userDiv.innerHTML = `
-                    <div class="status-dot ${statusClass}"></div>
-                    <div class="user-info">
-                        <div class="user-name">
-                            ${escapeHtml(user.username)}
-                            ${user.isAdmin ? '<span class="admin-badge" style="font-size: 10px; padding: 2px 6px; margin-left: 5px;">ADMIN</span>' : ''}
-                        </div>
-                        <div class="user-status">${isOnline ? 'Online' : 'Offline'}</div>
-                    </div>
-                `;
-
-                usersList.appendChild(userDiv);
-            });
-        }
-
-        function filterUsers() {
-            const searchTerm = userSearch.value.toLowerCase();
-            const filteredUsers = allUsers.filter(user => 
-                user.username.toLowerCase().includes(searchTerm)
-            );
-            displayUsers(filteredUsers);
-        }
-
-        async function updateStatus(status) {
-            try {
-                await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        username: currentUser.username, 
-                        status: status 
-                    })
-                });
-            } catch (error) {
-                console.error('Status update error:', error);
-            }
-        }
-
-        // Utility Functions
-        function linkify(text) {
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            return escapeHtml(text).replace(urlRegex, (url) => {
-                return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-            });
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function isUserOnline(lastActive) {
-            const now = new Date();
-            const lastActiveDate = new Date(lastActive);
-            const diffMinutes = (now - lastActiveDate) / 1000 / 60;
-            return diffMinutes < 5; // Consider online if active within 5 minutes
-        }
-
-        function scrollToBottom() {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function showError(message) {
-            authError.textContent = message;
-            authError.style.display = 'block';
-            authSuccess.style.display = 'none';
-        }
-
-        function showSuccess(message) {
-            authSuccess.textContent = message;
-            authSuccess.style.display = 'block';
-            authError.style.display = 'none';
-        }
-
-        function clearMessages() {
-            authError.style.display = 'none';
-            authSuccess.style.display = 'none';
-        }
-
-        function clearAuthInputs() {
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('signupUsername').value = '';
-            document.getElementById('signupPassword').value = '';
-            document.getElementById('signupPasswordConfirm').value = '';
-        }
-
-        function showLoading(btnId) {
-            const btn = document.getElementById(btnId);
-            btn.disabled = true;
-            btn.innerHTML += '<span class="spinner"></span>';
-        }
-
-        function hideLoading(btnId) {
-            const btn = document.getElementById(btnId);
-            btn.disabled = false;
-            const spinner = btn.querySelector('.spinner');
-            if (spinner) spinner.remove();
-        }
-
-        // Handle page visibility for status updates
-        document.addEventListener('visibilitychange', () => {
-            if (currentUser) {
-                updateStatus(document.hidden ? 'away' : 'online');
-            }
-        });
-
-        // Handle page unload
         window.addEventListener('beforeunload', () => {
             if (currentUser && channel) {
                 channel.publish('user-action', {
