@@ -5,87 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brumessenger</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-
-</head>
-<body>
-    <div id="authContainer">
-        <div class="auth-header">
-            <h1>🚀 Brumessenger</h1>
-            <p>Real-time chat powered by Ably</p>
-        </div>
-
-        <div class="error-message" id="authError"></div>
-        <div class="success-message" id="authSuccess"></div>
-
-        <div id="loginForm">
-            <div class="form-group">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" placeholder="Enter your username">
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password">
-            </div>
-            <button class="btn btn-primary" id="loginBtn">Login</button>
-            <button class="btn btn-secondary" id="showSignupBtn">Create Account</button>
-        </div>
-
-        <div id="signupForm" class="hidden">
-            <div class="form-group">
-                <label for="signupUsername">Username</label>
-                <input type="text" id="signupUsername" placeholder="Choose a username (min 3 characters)">
-            </div>
-            <div class="form-group">
-                <label for="signupPassword">Password</label>
-                <input type="password" id="signupPassword" placeholder="Choose a password">
-            </div>
-            <div class="form-group">
-                <label for="signupPasswordConfirm">Confirm Password</label>
-                <input type="password" id="signupPasswordConfirm" placeholder="Confirm your password">
-            </div>
-            <button class="btn btn-primary" id="signupBtn">Create Account</button>
-            <button class="btn btn-secondary" id="showLoginBtn">Back to Login</button>
-        </div>
-    </div>
-
-    <div id="chatContainer">
-        <div class="chat-header">
-            <h2>💬 Brumessenger</h2>
-            <div class="header-info">
-                <div class="user-badge" id="currentUserBadge">
-                    <span id="currentUsername"></span>
-                    <span id="adminBadge" class="admin-badge hidden">ADMIN</span>
-                </div>
-                <button class="btn-logout" id="logoutBtn">Logout</button>
-            </div>
-        </div>
-
-        <div class="chat-body">
-            <div class="sidebar">
-                <div class="search-container">
-                    <input type="text" class="search-input" id="userSearch" placeholder="🔍 Search users...">
-                </div>
-                <div class="users-list" id="usersList"></div>
-                
-                <div class="ad-container">
-                    <h3>🛡️ HostedScan</h3>
-                    <p>Professional Vulnerability Scanner</p>
-                    <a href="https://hostedscan.com" target="_blank">Learn More</a>
-                </div>
-            </div>
-
-            <div class="chat-area">
-                <div class="messages-container" id="messagesContainer"></div>
-                <div class="message-input-container">
-                    <div class="message-input-wrapper">
-                        <textarea class="message-input" id="messageInput" placeholder="Type your message..." rows="1"></textarea>
-                        <button class="btn-send" id="sendBtn">Send</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-        <style>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
@@ -156,6 +76,7 @@
             font-weight: 600;
             cursor: pointer;
             margin-bottom: 10px;
+            transition: all 0.3s;
         }
 
         .btn-primary {
@@ -165,11 +86,16 @@
 
         .btn-primary:hover {
             background: #5568d3;
+            transform: translateY(-2px);
         }
 
         .btn-secondary {
             background: #f5f5f5;
             color: #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
         }
 
         .error-message, .success-message {
@@ -180,15 +106,8 @@
             display: none;
         }
 
-        .error-message {
-            background: #fee;
-            color: #c33;
-        }
-
-        .success-message {
-            background: #efe;
-            color: #3c3;
-        }
+        .error-message { background: #fee; color: #c33; }
+        .success-message { background: #efe; color: #3c3; }
 
         #chatContainer {
             background: white;
@@ -210,30 +129,11 @@
             align-items: center;
         }
 
-        .chat-header h2 {
-            font-size: 24px;
-        }
-
-        .header-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
         .user-badge {
             background: rgba(255,255,255,0.2);
             padding: 8px 15px;
             border-radius: 20px;
             font-size: 14px;
-        }
-
-        .admin-badge {
-            background: #ffd700;
-            color: #333;
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
         }
 
         .btn-logout {
@@ -244,6 +144,7 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 14px;
+            transition: all 0.3s;
         }
 
         .btn-logout:hover {
@@ -261,11 +162,13 @@
             border-right: 1px solid #e0e0e0;
             display: flex;
             flex-direction: column;
+            background: #f9f9f9;
         }
 
         .search-container {
             padding: 15px;
             border-bottom: 1px solid #e0e0e0;
+            background: white;
         }
 
         .search-input {
@@ -295,10 +198,22 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            background: white;
+            transition: all 0.3s;
         }
 
         .user-item:hover {
-            background: #f5f5f5;
+            background: #e8e8e8;
+            transform: translateX(5px);
+        }
+
+        .user-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .user-item.active .user-name {
+            color: white;
         }
 
         .status-dot {
@@ -310,21 +225,33 @@
 
         .status-dot.online {
             background: #4caf50;
-            box-shadow: 0 0 5px #4caf50;
+            box-shadow: 0 0 8px #4caf50;
+            animation: pulse 2s infinite;
         }
 
-        .user-info {
-            flex: 1;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .user-name {
             font-weight: 600;
+            flex: 1;
+            font-size: 14px;
             color: #333;
         }
 
-        .user-status {
-            font-size: 12px;
-            color: #666;
+        .unread-badge {
+            background: #f44336;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
         }
 
         .chat-area {
@@ -333,55 +260,97 @@
             flex-direction: column;
         }
 
+        .chat-with-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-with-header h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .btn-report {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-report:hover {
+            background: #d32f2f;
+            transform: scale(1.05);
+        }
+
         .messages-container {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            background: #f9f9f9;
+            background: #f5f5f5;
         }
 
         .message {
             margin-bottom: 15px;
-        }
-
-        .message-header {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 5px;
+            animation: slideIn 0.3s ease;
         }
 
-        .message-sender {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 14px;
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .message-time {
-            font-size: 12px;
-            color: #999;
+        .message.sent {
+            justify-content: flex-end;
         }
 
         .message-content {
             background: white;
             padding: 12px 15px;
             border-radius: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             max-width: 70%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message.sent .message-content {
+            background: #667eea;
+            color: white;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #667eea;
+        }
+
+        .message.sent .message-sender {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.5;
             word-wrap: break-word;
         }
 
-        .message-content a {
-            color: #667eea;
-            text-decoration: underline;
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
         }
 
-        .system-message {
-            text-align: center;
-            color: #999;
-            font-size: 12px;
-            font-style: italic;
-            margin: 10px 0;
+        .message.sent .message-time {
+            color: rgba(255,255,255,0.7);
         }
 
         .message-input-container {
@@ -403,6 +372,7 @@
             font-size: 14px;
             resize: none;
             font-family: inherit;
+            max-height: 150px;
         }
 
         .message-input:focus {
@@ -419,10 +389,12 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
+            transition: all 0.3s;
         }
 
         .btn-send:hover {
             background: #5568d3;
+            transform: scale(1.05);
         }
 
         .btn-send:disabled {
@@ -430,119 +402,238 @@
             cursor: not-allowed;
         }
 
-        .ad-container {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px;
-            color: white;
-            text-align: center;
+        .empty-chat {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #999;
+            gap: 10px;
         }
 
-        .ad-container h3 {
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .ad-container p {
-            font-size: 13px;
+        .empty-chat-icon {
+            font-size: 64px;
             margin-bottom: 10px;
         }
 
-        .ad-container a {
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
             background: white;
-            color: #f5576c;
-            padding: 8px 20px;
-            border-radius: 20px;
-            text-decoration: none;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            font-size: 20px;
             font-weight: 600;
-            display: inline-block;
+            margin-bottom: 20px;
+            color: #333;
         }
 
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-left: 10px;
+        .modal-body textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            min-height: 120px;
+            font-family: inherit;
+            font-size: 14px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .modal-body textarea:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
-        .hidden {
-            display: none !important;
+        .modal-footer {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
         }
+
+        .modal-footer .btn {
+            flex: 1;
+            margin: 0;
+        }
+
+        .hidden { display: none !important; }
 
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .message-content { max-width: 90%; }
+            body { padding: 0; }
+            .sidebar { width: 250px; }
             #chatContainer { height: 100vh; border-radius: 0; }
         }
     </style>
+</head>
+<body>
+    <div id="authContainer">
+        <div class="auth-header">
+            <h1>🚀 Brumessenger</h1>
+            <p>Private Messaging Platform</p>
+        </div>
+
+        <div class="error-message" id="authError"></div>
+        <div class="success-message" id="authSuccess"></div>
+
+        <div id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+            </div>
+            <button class="btn btn-primary" id="loginBtn">Login</button>
+            <button class="btn btn-secondary" id="showSignupBtn">Create Account</button>
+        </div>
+
+        <div id="signupForm" class="hidden">
+            <div class="form-group">
+                <label for="signupUsername">Username</label>
+                <input type="text" id="signupUsername" placeholder="Choose a username (min 3 characters)">
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Choose a password (min 6 characters)">
+            </div>
+            <div class="form-group">
+                <label for="signupPasswordConfirm">Confirm Password</label>
+                <input type="password" id="signupPasswordConfirm" placeholder="Confirm your password">
+            </div>
+            <button class="btn btn-primary" id="signupBtn">Create Account</button>
+            <button class="btn btn-secondary" id="showLoginBtn">Back to Login</button>
+        </div>
+    </div>
+
+    <div id="chatContainer">
+        <div class="chat-header">
+            <h2>💬 Brumessenger</h2>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="user-badge" id="currentUsername"></div>
+                <button class="btn-logout" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+
+        <div class="chat-body">
+            <div class="sidebar">
+                <div class="search-container">
+                    <input type="text" class="search-input" id="userSearch" placeholder="🔍 Search users...">
+                </div>
+                <div class="users-list" id="usersList"></div>
+            </div>
+
+            <div class="chat-area">
+                <div id="emptyChatState" class="empty-chat">
+                    <div class="empty-chat-icon">💬</div>
+                    <h3>Select a user to start chatting</h3>
+                    <p>Click on any username below the search bar</p>
+                </div>
+
+                <div id="activeChatState" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
+                    <div class="chat-with-header">
+                        <h3 id="chatWithUser">User</h3>
+                        <button class="btn-report" id="reportBtn">🚨 Report User</button>
+                    </div>
+                    <div class="messages-container" id="messagesContainer"></div>
+                    <div class="message-input-container">
+                        <div class="message-input-wrapper">
+                            <textarea class="message-input" id="messageInput" placeholder="Type your message..." rows="1"></textarea>
+                            <button class="btn-send" id="sendBtn">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">🚨 Report User</div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; color: #666;">Why are you reporting <strong id="reportUsername" style="color: #667eea;"></strong>?</p>
+                <textarea id="reportReason" placeholder="Describe the issue and include any problematic messages..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelReportBtn">Cancel</button>
+                <button class="btn btn-primary" id="submitReportBtn">Submit Report</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const CONFIG = {
             ABLY_KEY: 'UNMYag.VcluoA:gkmv1VpeHWmrC7W0NJXRcdQZaRAJP0Z5uAj_dooMjuc',
-            ABLY_CHANNEL: 'BRUCHANNEL',
             BACKEND_URL: 'https://brumessenger-backend.vercel.app/api'
         };
 
         let currentUser = null;
         let ablyClient = null;
-        let channel = null;
         let allUsers = [];
-
-        const authContainer = document.getElementById('authContainer');
-        const chatContainer = document.getElementById('chatContainer');
-        const loginForm = document.getElementById('loginForm');
-        const signupForm = document.getElementById('signupForm');
-        const authError = document.getElementById('authError');
-        const authSuccess = document.getElementById('authSuccess');
-        const messagesContainer = document.getElementById('messagesContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const usersList = document.getElementById('usersList');
-        const userSearch = document.getElementById('userSearch');
-        const currentUsername = document.getElementById('currentUsername');
-        const adminBadge = document.getElementById('adminBadge');
+        let currentChatUser = null;
+        let conversations = {};
+        let unreadCounts = {};
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('brumessenger_user');
             if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                initializeChat();
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    initializeChat();
+                } catch (e) {
+                    localStorage.clear();
+                }
             }
 
             document.getElementById('loginBtn').addEventListener('click', handleLogin);
             document.getElementById('signupBtn').addEventListener('click', handleSignup);
             document.getElementById('showSignupBtn').addEventListener('click', () => {
-                loginForm.classList.add('hidden');
-                signupForm.classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('signupForm').classList.remove('hidden');
                 clearMessages();
             });
             document.getElementById('showLoginBtn').addEventListener('click', () => {
-                signupForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
+                document.getElementById('signupForm').classList.add('hidden');
+                document.getElementById('loginForm').classList.remove('hidden');
                 clearMessages();
             });
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-            sendBtn.addEventListener('click', sendMessage);
-            messageInput.addEventListener('keypress', (e) => {
+            document.getElementById('sendBtn').addEventListener('click', sendMessage);
+            document.getElementById('reportBtn').addEventListener('click', openReportModal);
+            document.getElementById('cancelReportBtn').addEventListener('click', closeReportModal);
+            document.getElementById('submitReportBtn').addEventListener('click', submitReport);
+            
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
-            userSearch.addEventListener('input', filterUsers);
 
-            messageInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            document.getElementById('userSearch').addEventListener('input', filterUsers);
+
+            document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
             });
         });
 
@@ -554,8 +645,6 @@
                 showError('Please enter username and password');
                 return;
             }
-
-            showLoading('loginBtn');
 
             try {
                 const response = await fetch(`${CONFIG.BACKEND_URL}/auth`, {
@@ -572,12 +661,10 @@
                     showSuccess('Login successful!');
                     setTimeout(() => initializeChat(), 1000);
                 } else {
-                    showError(data.error || 'Login failed');
+                    showError(data.error || 'Login failed. Check your credentials.');
                 }
             } catch (error) {
                 showError('Connection error. Please try again.');
-            } finally {
-                hideLoading('loginBtn');
             }
         }
 
@@ -596,12 +683,15 @@
                 return;
             }
 
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
             if (password !== confirmPassword) {
                 showError('Passwords do not match');
                 return;
             }
-
-            showLoading('signupBtn');
 
             try {
                 const response = await fetch(`${CONFIG.BACKEND_URL}/auth`, {
@@ -613,20 +703,18 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    showSuccess('Account created! Redirecting to login...');
+                    showSuccess('Account created successfully!');
                     setTimeout(() => {
-                        signupForm.classList.add('hidden');
-                        loginForm.classList.remove('hidden');
+                        document.getElementById('signupForm').classList.add('hidden');
+                        document.getElementById('loginForm').classList.remove('hidden');
                         document.getElementById('loginUsername').value = username;
                         clearMessages();
                     }, 1500);
                 } else {
-                    showError(data.error || 'Signup failed');
+                    showError(data.error || 'Signup failed. Username may be taken.');
                 }
             } catch (error) {
                 showError('Connection error. Please try again.');
-            } finally {
-                hideLoading('signupBtn');
             }
         }
 
@@ -638,144 +726,59 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ username: currentUser.username, status: 'offline' })
                     });
-                } catch (error) {
-                    console.error('Status update error:', error);
-                }
-
-                if (channel) {
-                    channel.publish('user-action', {
-                        action: 'leave',
-                        username: currentUser.username,
-                        timestamp: new Date().toISOString()
-                    });
-                }
+                } catch (e) {}
             }
-
             if (ablyClient) ablyClient.close();
-            localStorage.removeItem('brumessenger_user');
-            currentUser = null;
-            chatContainer.style.display = 'none';
-            authContainer.style.display = 'block';
-            messagesContainer.innerHTML = '';
-            clearAuthInputs();
+            localStorage.clear();
+            location.reload();
         }
 
         async function initializeChat() {
-            authContainer.style.display = 'none';
-            chatContainer.style.display = 'block';
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'block';
+            document.getElementById('currentUsername').textContent = currentUser.username;
 
-            currentUsername.textContent = currentUser.username;
-            if (currentUser.isAdmin) {
-                adminBadge.classList.remove('hidden');
+            const saved = localStorage.getItem(`conversations_${currentUser.username}`);
+            if (saved) {
+                try {
+                    conversations = JSON.parse(saved);
+                } catch (e) {
+                    conversations = {};
+                }
+            }
+
+            const savedUnread = localStorage.getItem(`unread_${currentUser.username}`);
+            if (savedUnread) {
+                try {
+                    unreadCounts = JSON.parse(savedUnread);
+                } catch (e) {
+                    unreadCounts = {};
+                }
             }
 
             ablyClient = new Ably.Realtime(CONFIG.ABLY_KEY);
-            channel = ablyClient.channels.get(CONFIG.ABLY_CHANNEL);
 
-            await loadMessageHistory();
-
-            channel.subscribe('chat-message', (message) => {
-                displayMessage(message.data);
-            });
-
-            channel.subscribe('user-action', (message) => {
-                displaySystemMessage(message.data);
-            });
-
-            channel.publish('user-action', {
-                action: 'join',
-                username: currentUser.username,
-                timestamp: new Date().toISOString()
-            });
-
-            updateStatus('online');
-            loadUsers();
-            setInterval(() => updateStatus('online'), 60000);
-        }
-
-        async function loadMessageHistory() {
             try {
-                const history = await channel.history({ limit: 50 });
-                const messages = [];
-                
-                history.items.forEach(item => {
-                    if (item.name === 'chat-message') {
-                        messages.push(item.data);
-                    }
+                await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: currentUser.username, status: 'online' })
                 });
+            } catch (e) {}
 
-                messages.reverse().forEach(msg => displayMessage(msg, false));
-                scrollToBottom();
-            } catch (error) {
-                console.error('Error loading history:', error);
-            }
+            await loadUsers();
+            setInterval(() => loadUsers(), 30000);
+            setInterval(() => updateStatus(), 60000);
         }
 
-        async function sendMessage() {
-            const text = messageInput.value.trim();
-            if (!text) return;
-
-            sendBtn.disabled = true;
-
-            const message = {
-                sender: currentUser.username,
-                text: text,
-                timestamp: new Date().toISOString(),
-                isAdmin: currentUser.isAdmin || false
-            };
-
+        async function updateStatus() {
             try {
-                await channel.publish('chat-message', message);
-                messageInput.value = '';
-                messageInput.style.height = 'auto';
-            } catch (error) {
-                console.error('Error sending message:', error);
-                showError('Failed to send message');
-            } finally {
-                sendBtn.disabled = false;
-                messageInput.focus();
-            }
-        }
-
-        function displayMessage(data, animate = true) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-
-            const time = new Date(data.timestamp).toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            const textWithLinks = linkify(data.text);
-
-            messageDiv.innerHTML = `
-                <div class="message-header">
-                    <span class="message-sender">${escapeHtml(data.sender)}</span>
-                    ${data.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
-                    <span class="message-time">${time}</span>
-                </div>
-                <div class="message-content">${textWithLinks}</div>
-            `;
-
-            messagesContainer.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        function displaySystemMessage(data) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'system-message';
-
-            const action = data.action === 'join' ? 'joined the chat' : 'left the chat';
-            const time = new Date(data.timestamp).toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            messageDiv.textContent = `${data.username} ${action} at ${time}`;
-            messagesContainer.appendChild(messageDiv);
-            scrollToBottom();
-
-            loadUsers();
+                await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: currentUser.username, status: 'online' })
+                });
+            } catch (e) {}
         }
 
         async function loadUsers() {
@@ -784,7 +787,7 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    allUsers = data.users;
+                    allUsers = data.users.filter(u => u.username !== currentUser.username);
                     displayUsers(allUsers);
                 }
             } catch (error) {
@@ -793,61 +796,205 @@
         }
 
         function displayUsers(users) {
+            const usersList = document.getElementById('usersList');
             usersList.innerHTML = '';
+
+            if (users.length === 0) {
+                usersList.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">No users yet</div>';
+                return;
+            }
 
             users.forEach(user => {
                 const userDiv = document.createElement('div');
                 userDiv.className = 'user-item';
+                if (currentChatUser === user.username) {
+                    userDiv.classList.add('active');
+                }
 
                 const isOnline = isUserOnline(user.lastActive);
-                const statusClass = isOnline ? 'online' : '';
+                const unreadCount = unreadCounts[user.username] || 0;
 
                 userDiv.innerHTML = `
-                    <div class="status-dot ${statusClass}"></div>
-                    <div class="user-info">
-                        <div class="user-name">
-                            ${escapeHtml(user.username)}
-                            ${user.isAdmin ? '<span class="admin-badge" style="font-size: 10px; padding: 2px 6px; margin-left: 5px;">ADMIN</span>' : ''}
-                        </div>
-                        <div class="user-status">${isOnline ? 'Online' : 'Offline'}</div>
-                    </div>
+                    <div class="status-dot ${isOnline ? 'online' : ''}"></div>
+                    <div class="user-name">${escapeHtml(user.username)}</div>
+                    ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
                 `;
 
+                userDiv.addEventListener('click', () => openChat(user.username));
                 usersList.appendChild(userDiv);
             });
         }
 
+        function openChat(username) {
+            currentChatUser = username;
+            
+            unreadCounts[username] = 0;
+            localStorage.setItem(`unread_${currentUser.username}`, JSON.stringify(unreadCounts));
+
+            document.getElementById('emptyChatState').style.display = 'none';
+            document.getElementById('activeChatState').classList.remove('hidden');
+            document.getElementById('activeChatState').style.display = 'flex';
+            document.getElementById('chatWithUser').textContent = username;
+
+            subscribeToUser(username);
+            displayConversation(username);
+            displayUsers(allUsers);
+            document.getElementById('messageInput').focus();
+        }
+
+        function subscribeToUser(username) {
+            const channelName = [currentUser.username, username].sort().join('-');
+            const channel = ablyClient.channels.get(channelName);
+            
+            channel.subscribe('private-message', (message) => {
+                const msg = message.data;
+                
+                if ((msg.from === username && msg.to === currentUser.username) || 
+                    (msg.from === currentUser.username && msg.to === username)) {
+                    
+                    if (!conversations[username]) {
+                        conversations[username] = [];
+                    }
+                    
+                    const exists = conversations[username].some(m => 
+                        m.timestamp === msg.timestamp && m.text === msg.text
+                    );
+                    
+                    if (!exists) {
+                        conversations[username].push(msg);
+                        localStorage.setItem(`conversations_${currentUser.username}`, JSON.stringify(conversations));
+
+                        if (currentChatUser === username) {
+                            displayConversation(username);
+                        } else if (msg.to === currentUser.username) {
+                            unreadCounts[username] = (unreadCounts[username] || 0) + 1;
+                            localStorage.setItem(`unread_${currentUser.username}`, JSON.stringify(unreadCounts));
+                            displayUsers(allUsers);
+                        }
+                    }
+                }
+            });
+        }
+
+        async function sendMessage() {
+            if (!currentChatUser) return;
+
+            const text = document.getElementById('messageInput').value.trim();
+            if (!text) return;
+
+            const message = {
+                from: currentUser.username,
+                to: currentChatUser,
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+
+            document.getElementById('sendBtn').disabled = true;
+
+            try {
+                const channelName = [currentUser.username, currentChatUser].sort().join('-');
+                const channel = ablyClient.channels.get(channelName);
+                
+                await channel.publish('private-message', message);
+
+                if (!conversations[currentChatUser]) {
+                    conversations[currentChatUser] = [];
+                }
+                conversations[currentChatUser].push(message);
+                localStorage.setItem(`conversations_${currentUser.username}`, JSON.stringify(conversations));
+
+                document.getElementById('messageInput').value = '';
+                displayConversation(currentChatUser);
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            } finally {
+                document.getElementById('sendBtn').disabled = false;
+            }
+        }
+
+        function displayConversation(username) {
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = '';
+            const messages = conversations[username] || [];
+
+            if (messages.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">No messages yet. Start the conversation!</div>';
+                return;
+            }
+
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = msg.from === currentUser.username ? 'message sent' : 'message';
+
+                const time = new Date(msg.timestamp).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="message-sender">${msg.from === currentUser.username ? 'You' : escapeHtml(msg.from)}</div>
+                        <div class="message-text">${escapeHtml(msg.text)}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+
+                container.appendChild(messageDiv);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function openReportModal() {
+            if (!currentChatUser) return;
+            document.getElementById('reportUsername').textContent = currentChatUser;
+            document.getElementById('reportModal').classList.add('show');
+        }
+
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.remove('show');
+            document.getElementById('reportReason').value = '';
+        }
+
+        async function submitReport() {
+            const reason = document.getElementById('reportReason').value.trim();
+            if (!reason) {
+                alert('Please provide a reason for reporting this user');
+                return;
+            }
+
+            if (reason.length < 10) {
+                alert('Please provide more details (at least 10 characters)');
+                return;
+            }
+
+            const report = {
+                reporter: currentUser.username,
+                reported: currentChatUser,
+                reason: reason,
+                conversation: conversations[currentChatUser] || [],
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const channel = ablyClient.channels.get('admin-reports');
+                await channel.publish('user-report', report);
+                
+                alert('✅ Report submitted successfully!\n\nAdmin will review your report and take appropriate action.');
+                closeReportModal();
+            } catch (error) {
+                console.error('Error submitting report:', error);
+                alert('❌ Failed to submit report. Please try again.');
+            }
+        }
+
         function filterUsers() {
-            const searchTerm = userSearch.value.toLowerCase();
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
             const filteredUsers = allUsers.filter(user => 
                 user.username.toLowerCase().includes(searchTerm)
             );
             displayUsers(filteredUsers);
-        }
-
-        async function updateStatus(status) {
-            try {
-                await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: currentUser.username, status: status })
-                });
-            } catch (error) {
-                console.error('Status update error:', error);
-            }
-        }
-
-        function linkify(text) {
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            return escapeHtml(text).replace(urlRegex, (url) => {
-                return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-            });
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
         }
 
         function isUserOnline(lastActive) {
@@ -857,63 +1004,40 @@
             return diffMinutes < 5;
         }
 
-        function scrollToBottom() {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function showError(message) {
-            authError.textContent = message;
-            authError.style.display = 'block';
-            authSuccess.style.display = 'none';
+            const error = document.getElementById('authError');
+            error.textContent = message;
+            error.style.display = 'block';
+            setTimeout(() => error.style.display = 'none', 5000);
         }
 
         function showSuccess(message) {
-            authSuccess.textContent = message;
-            authSuccess.style.display = 'block';
-            authError.style.display = 'none';
+            const success = document.getElementById('authSuccess');
+            success.textContent = message;
+            success.style.display = 'block';
         }
 
         function clearMessages() {
-            authError.style.display = 'none';
-            authSuccess.style.display = 'none';
+            document.getElementById('authError').style.display = 'none';
+            document.getElementById('authSuccess').style.display = 'none';
         }
-
-        function clearAuthInputs() {
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('signupUsername').value = '';
-            document.getElementById('signupPassword').value = '';
-            document.getElementById('signupPasswordConfirm').value = '';
-        }
-
-        function showLoading(btnId) {
-            const btn = document.getElementById(btnId);
-            btn.disabled = true;
-            btn.innerHTML += '<span class="spinner"></span>';
-        }
-
-        function hideLoading(btnId) {
-            const btn = document.getElementById(btnId);
-            btn.disabled = false;
-            const spinner = btn.querySelector('.spinner');
-            if (spinner) spinner.remove();
-        }
-
-        document.addEventListener('visibilitychange', () => {
-            if (currentUser) {
-                updateStatus(document.hidden ? 'away' : 'online');
-            }
-        });
 
         window.addEventListener('beforeunload', () => {
-            if (currentUser && channel) {
-                channel.publish('user-action', {
-                    action: 'leave',
-                    username: currentUser.username,
-                    timestamp: new Date().toISOString()
+            if (currentUser && ablyClient) {
+                fetch(`${CONFIG.BACKEND_URL}/update-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: currentUser.username, status: 'offline' }),
+                    keepalive: true
                 });
             }
         });
     </script>
 </body>
-</html>
+</html>s
