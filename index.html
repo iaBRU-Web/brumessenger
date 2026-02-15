@@ -5,7 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brumessenger</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-    <style>
+
+</head>
+<body>
+    <div id="authContainer">
+        <div class="auth-header">
+            <h1>🚀 Brumessenger</h1>
+            <p>Private Messaging Platform</p>
+        </div>
+
+        <div class="error-message" id="authError"></div>
+        <div class="success-message" id="authSuccess"></div>
+
+        <div id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+            </div>
+            <button class="btn btn-primary" id="loginBtn">Login</button>
+            <button class="btn btn-secondary" id="showSignupBtn">Create Account</button>
+        </div>
+
+        <div id="signupForm" class="hidden">
+            <div class="form-group">
+                <label for="signupUsername">Username</label>
+                <input type="text" id="signupUsername" placeholder="Choose a username (min 3 characters)">
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Choose a password (min 6 characters)">
+            </div>
+            <div class="form-group">
+                <label for="signupPasswordConfirm">Confirm Password</label>
+                <input type="password" id="signupPasswordConfirm" placeholder="Confirm your password">
+            </div>
+            <button class="btn btn-primary" id="signupBtn">Create Account</button>
+            <button class="btn btn-secondary" id="showLoginBtn">Back to Login</button>
+        </div>
+    </div>
+
+    <div id="chatContainer">
+        <div class="chat-header">
+            <h2>💬 Brumessenger</h2>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="user-badge" id="currentUsername"></div>
+                <button class="btn-logout" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+
+        <div class="chat-body">
+            <div class="sidebar">
+                <div class="search-container">
+                    <input type="text" class="search-input" id="userSearch" placeholder="🔍 Search users...">
+                </div>
+                <div class="users-list" id="usersList"></div>
+            </div>
+
+            <div class="chat-area">
+                <div id="emptyChatState" class="empty-chat">
+                    <div class="empty-chat-icon">💬</div>
+                    <h3>Select a user to start chatting</h3>
+                    <p>Click on any username below the search bar</p>
+                </div>
+
+                <div id="activeChatState" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
+                    <div class="chat-with-header">
+                        <h3 id="chatWithUser">User</h3>
+                        <button class="btn-report" id="reportBtn">🚨 Report User</button>
+                    </div>
+                    <div class="messages-container" id="messagesContainer"></div>
+                    <div class="message-input-container">
+                        <div class="message-input-wrapper">
+                            <textarea class="message-input" id="messageInput" placeholder="Type your message..." rows="1"></textarea>
+                            <button class="btn-send" id="sendBtn">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">🚨 Report User</div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; color: #666;">Why are you reporting <strong id="reportUsername" style="color: #667eea;"></strong>?</p>
+                <textarea id="reportReason" placeholder="Describe the issue and include any problematic messages..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelReportBtn">Cancel</button>
+                <button class="btn btn-primary" id="submitReportBtn">Submit Report</button>
+            </div>
+        </div>
+    </div>
+        <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
@@ -484,103 +581,6 @@
             #chatContainer { height: 100vh; border-radius: 0; }
         }
     </style>
-</head>
-<body>
-    <div id="authContainer">
-        <div class="auth-header">
-            <h1>🚀 Brumessenger</h1>
-            <p>Private Messaging Platform</p>
-        </div>
-
-        <div class="error-message" id="authError"></div>
-        <div class="success-message" id="authSuccess"></div>
-
-        <div id="loginForm">
-            <div class="form-group">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" placeholder="Enter your username">
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password">
-            </div>
-            <button class="btn btn-primary" id="loginBtn">Login</button>
-            <button class="btn btn-secondary" id="showSignupBtn">Create Account</button>
-        </div>
-
-        <div id="signupForm" class="hidden">
-            <div class="form-group">
-                <label for="signupUsername">Username</label>
-                <input type="text" id="signupUsername" placeholder="Choose a username (min 3 characters)">
-            </div>
-            <div class="form-group">
-                <label for="signupPassword">Password</label>
-                <input type="password" id="signupPassword" placeholder="Choose a password (min 6 characters)">
-            </div>
-            <div class="form-group">
-                <label for="signupPasswordConfirm">Confirm Password</label>
-                <input type="password" id="signupPasswordConfirm" placeholder="Confirm your password">
-            </div>
-            <button class="btn btn-primary" id="signupBtn">Create Account</button>
-            <button class="btn btn-secondary" id="showLoginBtn">Back to Login</button>
-        </div>
-    </div>
-
-    <div id="chatContainer">
-        <div class="chat-header">
-            <h2>💬 Brumessenger</h2>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <div class="user-badge" id="currentUsername"></div>
-                <button class="btn-logout" id="logoutBtn">Logout</button>
-            </div>
-        </div>
-
-        <div class="chat-body">
-            <div class="sidebar">
-                <div class="search-container">
-                    <input type="text" class="search-input" id="userSearch" placeholder="🔍 Search users...">
-                </div>
-                <div class="users-list" id="usersList"></div>
-            </div>
-
-            <div class="chat-area">
-                <div id="emptyChatState" class="empty-chat">
-                    <div class="empty-chat-icon">💬</div>
-                    <h3>Select a user to start chatting</h3>
-                    <p>Click on any username below the search bar</p>
-                </div>
-
-                <div id="activeChatState" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
-                    <div class="chat-with-header">
-                        <h3 id="chatWithUser">User</h3>
-                        <button class="btn-report" id="reportBtn">🚨 Report User</button>
-                    </div>
-                    <div class="messages-container" id="messagesContainer"></div>
-                    <div class="message-input-container">
-                        <div class="message-input-wrapper">
-                            <textarea class="message-input" id="messageInput" placeholder="Type your message..." rows="1"></textarea>
-                            <button class="btn-send" id="sendBtn">Send</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="reportModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">🚨 Report User</div>
-            <div class="modal-body">
-                <p style="margin-bottom: 15px; color: #666;">Why are you reporting <strong id="reportUsername" style="color: #667eea;"></strong>?</p>
-                <textarea id="reportReason" placeholder="Describe the issue and include any problematic messages..."></textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancelReportBtn">Cancel</button>
-                <button class="btn btn-primary" id="submitReportBtn">Submit Report</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         const CONFIG = {
             ABLY_KEY: 'UNMYag.VcluoA:gkmv1VpeHWmrC7W0NJXRcdQZaRAJP0Z5uAj_dooMjuc',
