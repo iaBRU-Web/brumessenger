@@ -584,7 +584,7 @@
     <script>
         const CONFIG = {
             ABLY_KEY: 'UNMYag.VcluoA:gkmv1VpeHWmrC7W0NJXRcdQZaRAJP0Z5uAj_dooMjuc',
-            BACKEND_URL: 'https://brumessenger-backend.vercel.app/api'
+            BACKEND_URL: 'https://brumessenger-backend.vercel.app'
         };
 
         let currentUser = null;
@@ -825,7 +825,7 @@
             });
         }
 
-        function openChat(username) {
+        async function openChat(username) {
             currentChatUser = username;
             
             unreadCounts[username] = 0;
@@ -836,10 +836,30 @@
             document.getElementById('activeChatState').style.display = 'flex';
             document.getElementById('chatWithUser').textContent = username;
 
+            // Load messages from cloud first
+            await loadMessagesFromCloud(username);
+
             subscribeToUser(username);
             displayConversation(username);
             displayUsers(allUsers);
             document.getElementById('messageInput').focus();
+        }
+
+        async function loadMessagesFromCloud(username) {
+            try {
+                const response = await fetch(
+                    `${CONFIG.BACKEND_URL}/api/messages?user1=${currentUser.username}&user2=${username}`
+                );
+                const data = await response.json();
+
+                if (data.success && data.messages) {
+                    conversations[username] = data.messages;
+                    localStorage.setItem(`conversations_${currentUser.username}`, JSON.stringify(conversations));
+                }
+            } catch (error) {
+                console.error('Error loading messages from cloud:', error);
+                // If cloud fails, use local storage
+            }
         }
 
         function subscribeToUser(username) {
@@ -892,6 +912,14 @@
             document.getElementById('sendBtn').disabled = true;
 
             try {
+                // Save to cloud storage first
+                await fetch(`${CONFIG.BACKEND_URL}/api/messages`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(message)
+                });
+
+                // Then send via Ably for real-time delivery
                 const channelName = [currentUser.username, currentChatUser].sort().join('-');
                 const channel = ablyClient.channels.get(channelName);
                 
