@@ -1,9 +1,0 @@
-{
-  "name": "brumessenger-frontend",
-  "version": "1.0.0",
-  "description": "Brumessenger Real-Time Chat - Created by Ineza Aime Bruno",
-  "scripts": {
-    "start": "serve .",
-    "build": "echo 'No build needed'"
-  }
-}
