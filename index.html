@@ -3,85 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brumessenger - Fixed</title>
-    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+    <title>Brumessenger</title>
+    <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
 
 </head>
 <body>
-    <div id="authContainer">
-        <div class="auth-header">
-            <h1>🚀 Brumessenger</h1>
-            <p>Private Messaging Platform - Fixed Version</p>
+    <div class="container">
+        <div id="authScreen" class="auth-container">
+            <h1>🗨️ Brumessenger</h1>
+            <p>Connect with friends instantly</p>
+            
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" />
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" />
+            </div>
+            
+            <button class="btn btn-primary" onclick="login()">Login</button>
+            <button class="btn btn-secondary" onclick="signup()">Sign Up</button>
+            
+            <div id="authMessage"></div>
         </div>
 
-        <div class="error-message" id="authError"></div>
-        <div class="success-message" id="authSuccess"></div>
-
-        <div id="loginForm">
-            <div class="form-group">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" placeholder="Enter your username">
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password">
-            </div>
-            <button class="btn btn-primary" id="loginBtn">Login</button>
-            <button class="btn btn-secondary" id="showSignupBtn">Create Account</button>
-        </div>
-
-        <div id="signupForm" class="hidden">
-            <div class="form-group">
-                <label for="signupUsername">Username</label>
-                <input type="text" id="signupUsername" placeholder="Choose a username (min 3 characters)">
-            </div>
-            <div class="form-group">
-                <label for="signupPassword">Password</label>
-                <input type="password" id="signupPassword" placeholder="Choose a password (min 6 characters)">
-            </div>
-            <div class="form-group">
-                <label for="signupPasswordConfirm">Confirm Password</label>
-                <input type="password" id="signupPasswordConfirm" placeholder="Confirm your password">
-            </div>
-            <button class="btn btn-primary" id="signupBtn">Create Account</button>
-            <button class="btn btn-secondary" id="showLoginBtn">Back to Login</button>
-        </div>
-    </div>
-
-    <div id="chatContainer">
-        <div class="chat-header">
-            <h2>💬 Brumessenger</h2>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <div class="user-badge" id="currentUsername"></div>
-                <button class="btn-logout" id="logoutBtn">Logout</button>
-            </div>
-        </div>
-
-        <div class="chat-body">
-            <div class="sidebar">
-                <div class="search-container">
-                    <input type="text" class="search-input" id="userSearch" placeholder="🔍 Search users...">
-                </div>
-                <div class="users-list" id="usersList"></div>
+        <div id="chatScreen" class="hidden">
+            <div id="adminPanel" class="admin-panel hidden">
+                <h3>👑 Admin Dashboard</h3>
+                <button class="admin-btn" onclick="viewAllUsers()">View All Users & Passwords</button>
+                <button class="admin-btn" onclick="viewSignupNotifications()">New Signups <span id="notifBadge" class="notification-badge hidden">0</span></button>
             </div>
 
-            <div class="chat-area">
-                <div id="emptyChatState" class="empty-chat">
-                    <div class="empty-chat-icon">💬</div>
-                    <h3>Select a user to start chatting</h3>
-                    <p>Click on any username from the list</p>
-                </div>
-
-                <div id="activeChatState" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
-                    <div class="chat-with-header">
-                        <h3 id="chatWithUser">User</h3>
-                        <button class="btn-report" id="reportBtn">🚨 Report User</button>
+            <div class="chat-container">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <h2 id="currentUserName"></h2>
+                        <small>Online now</small>
                     </div>
-                    <div class="messages-container" id="messagesContainer"></div>
-                    <div class="message-input-container">
-                        <div class="message-input-wrapper">
-                            <textarea class="message-input" id="messageInput" placeholder="Type your message..." rows="1"></textarea>
-                            <button class="btn-send" id="sendBtn">Send</button>
+                    <div id="usersList" class="users-list"></div>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+
+                <div class="chat-area">
+                    <div id="emptyState" class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <h3>Select a user to start chatting</h3>
+                    </div>
+
+                    <div id="activeChat" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
+                        <div class="chat-header">
+                            <h3 id="chatUsername"></h3>
+                        </div>
+                        <div id="messagesContainer" class="messages-container"></div>
+                        <div class="message-input-container">
+                            <input type="text" id="messageInput" class="message-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendMessage()" />
+                            <button class="send-btn" onclick="sendMessage()">Send</button>
                         </div>
                     </div>
                 </div>
@@ -89,22 +67,15 @@
         </div>
     </div>
 
-    <div id="reportModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">🚨 Report User</div>
-            <div class="modal-body">
-                <p style="margin-bottom: 15px; color: #666;">Why are you reporting <strong id="reportUsername" style="color: #667eea;"></strong>?</p>
-                <textarea id="reportReason" placeholder="Describe the issue and include any problematic messages..."></textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancelReportBtn">Cancel</button>
-                <button class="btn btn-primary" id="submitReportBtn">Submit Report</button>
-            </div>
+    <div id="adminModal" class="hidden admin-modal" onclick="if(event.target===this) this.classList.add('hidden')">
+        <div class="admin-modal-content" onclick="event.stopPropagation()">
+            <h2 id="modalTitle"></h2>
+            <div id="modalContent"></div>
+            <button class="btn btn-secondary close-modal" onclick="document.getElementById('adminModal').classList.add('hidden')">Close</button>
         </div>
     </div>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -114,559 +85,381 @@
             align-items: center;
             padding: 20px;
         }
-
-        #authContainer {
+        .container {
+            width: 100%;
+            max-width: 1200px;
             background: white;
-            padding: 40px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 400px;
-            width: 100%;
+            overflow: hidden;
         }
-
-        .auth-header {
+        .auth-container {
+            padding: 60px 40px;
             text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .auth-container h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .auth-container p {
+            color: #666;
             margin-bottom: 30px;
         }
-
-        .auth-header h1 {
-            color: #667eea;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .auth-header p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .form-group {
+        .input-group {
             margin-bottom: 20px;
+            text-align: left;
         }
-
-        .form-group label {
+        .input-group label {
             display: block;
             margin-bottom: 8px;
             color: #333;
-            font-weight: 500;
+            font-weight: 600;
         }
-
-        .form-group input {
+        .input-group input {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-
-        .form-group input:focus {
+        .input-group input:focus {
             outline: none;
             border-color: #667eea;
         }
-
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-bottom: 10px;
             transition: all 0.3s;
+            margin-top: 10px;
         }
-
         .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        .btn-secondary:hover {
             background: #667eea;
             color: white;
         }
-
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
         }
-
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
+        .btn-danger:hover {
+            background: #c0392b;
         }
-
-        .btn-secondary {
-            background: #f5f5f5;
-            color: #667eea;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
-
-        .error-message, .success-message {
-            padding: 10px;
+        .error-message {
+            background: #fee;
+            color: #c00;
+            padding: 12px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-top: 15px;
             font-size: 14px;
-            display: none;
         }
-
-        .error-message { background: #fee; color: #c33; }
-        .success-message { background: #efe; color: #3c3; }
-
-        #chatContainer {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 1200px;
-            width: 100%;
-            height: 90vh;
-            display: none;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            padding: 20px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 20px 20px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-header h2 {
-            font-size: 24px;
-        }
-
-        .user-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 500;
-        }
-
-        .btn-logout {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 8px 16px;
+        .success-message {
+            background: #efe;
+            color: #0a0;
+            padding: 12px;
             border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
+            margin-top: 15px;
+            font-size: 14px;
         }
-
-        .btn-logout:hover {
-            background: rgba(255,255,255,0.3);
+        .chat-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: 80vh;
         }
-
-        .chat-body {
-            display: flex;
-            height: calc(100% - 80px);
-        }
-
         .sidebar {
-            width: 300px;
             border-right: 1px solid #e0e0e0;
             display: flex;
             flex-direction: column;
         }
-
-        .search-container {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
-
-        .search-input {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 20px;
-            font-size: 14px;
+        .sidebar-header h2 {
+            font-size: 1.2em;
+            margin-bottom: 5px;
         }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
+        .sidebar-header small {
+            opacity: 0.9;
         }
-
         .users-list {
             flex: 1;
             overflow-y: auto;
         }
-
         .user-item {
             padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            border-bottom: 1px solid #f0f0f0;
             cursor: pointer;
             transition: background 0.2s;
-            border-bottom: 1px solid #f0f0f0;
-            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-
         .user-item:hover {
             background: #f8f9fa;
         }
-
         .user-item.active {
-            background: #e8e8ff;
+            background: #e7f3ff;
+            border-left: 3px solid #667eea;
         }
-
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
         .status-dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             background: #ccc;
-            flex-shrink: 0;
         }
-
         .status-dot.online {
-            background: #4caf50;
-            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+            background: #22c55e;
         }
-
-        .user-name {
-            flex: 1;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .unread-badge {
-            background: #667eea;
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
+        .admin-badge {
+            background: #fbbf24;
+            color: #78350f;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
             font-weight: 600;
         }
-
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .empty-chat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #999;
-        }
-
-        .empty-chat-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-
-        .chat-with-header {
-            padding: 15px 30px;
-            border-bottom: 2px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-report {
-            background: #ff5252;
-            color: white;
+        .logout-btn {
+            padding: 12px 20px;
+            background: #f3f4f6;
             border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
+            font-weight: 600;
+            transition: background 0.2s;
         }
-
-        .btn-report:hover {
-            background: #ff3838;
+        .logout-btn:hover {
+            background: #e5e7eb;
         }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
             padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
             background: #f8f9fa;
         }
-
+        .chat-header h3 {
+            color: #333;
+        }
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
         .message {
             margin-bottom: 15px;
             display: flex;
-            max-width: 70%;
+            gap: 10px;
         }
-
         .message.sent {
-            margin-left: auto;
+            flex-direction: row-reverse;
         }
-
-        .message-content {
-            background: white;
+        .message-bubble {
+            max-width: 60%;
             padding: 12px 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 18px;
+            word-wrap: break-word;
         }
-
-        .message.sent .message-content {
-            background: #667eea;
+        .message.received .message-bubble {
+            background: white;
+            color: #333;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .message.sent .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
-
-        .message-sender {
-            font-weight: 600;
-            font-size: 12px;
-            margin-bottom: 4px;
-            opacity: 0.8;
-        }
-
-        .message-text {
-            word-wrap: break-word;
-            line-height: 1.4;
-        }
-
         .message-time {
             font-size: 11px;
+            opacity: 0.7;
             margin-top: 4px;
-            opacity: 0.6;
         }
-
         .message-input-container {
-            padding: 15px 30px;
-            border-top: 2px solid #e0e0e0;
-            background: white;
-        }
-
-        .message-input-wrapper {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
             display: flex;
             gap: 10px;
         }
-
         .message-input {
             flex: 1;
-            padding: 12px;
+            padding: 12px 16px;
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 14px;
-            font-family: inherit;
-            resize: none;
-            max-height: 100px;
+            border-radius: 25px;
+            font-size: 15px;
         }
-
         .message-input:focus {
             outline: none;
             border-color: #667eea;
         }
-
-        .btn-send {
-            background: #667eea;
+        .send-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            cursor: pointer;
+            border-radius: 25px;
             font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s;
         }
-
-        .btn-send:hover {
-            background: #5568d3;
+        .send-btn:hover {
+            transform: scale(1.05);
         }
-
-        .btn-send:disabled {
-            background: #ccc;
-            cursor: not-allowed;
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #999;
         }
-
-        .hidden {
-            display: none !important;
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
         }
-
-        .modal {
-            display: none;
+        .admin-panel {
+            background: #fff3cd;
+            padding: 15px 20px;
+            border-bottom: 2px solid #ffc107;
+        }
+        .admin-panel h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        .admin-btn {
+            background: #ffc107;
+            color: #856404;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        .admin-btn:hover {
+            background: #e0a800;
+        }
+        .admin-modal {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: rgba(0,0,0,0.5);
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
+        .admin-modal-content {
             background: white;
             padding: 30px;
-            border-radius: 20px;
-            max-width: 500px;
+            border-radius: 15px;
+            max-width: 600px;
             width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
-
-        .modal-header {
-            font-size: 24px;
-            font-weight: 600;
+        .admin-modal-content h2 {
             margin-bottom: 20px;
             color: #333;
         }
-
-        .modal-body textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
+        .user-card {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
             border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .modal-body textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .modal-footer {
-            margin-top: 20px;
             display: flex;
-            gap: 10px;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .modal-footer .btn {
-            width: auto;
-            padding: 10px 20px;
-            margin: 0;
+        .user-card-info {
+            flex: 1;
         }
-
-        @media (max-width: 768px) {
-            .sidebar { width: 250px; }
-            #chatContainer { height: 100vh; border-radius: 0; }
+        .user-card-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .user-card-info small {
+            color: #666;
+        }
+        .delete-user-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .delete-user-btn:hover {
+            background: #c0392b;
+        }
+        .close-modal {
+            margin-top: 20px;
+            width: 100%;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .notification-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
         }
     </style>
     <script>
-        const CONFIG = {
-            ABLY_KEY: 'UNMYag.VcluoA:gkmv1VpeHWmrC7W0NJXRcdQZaRAJP0Z5uAj_dooMjuc',
-            BACKEND_URL: 'https://brumessenger-backend.vercel.app/api'
-        };
-
+        const API_URL = 'https://brumessenger-backend.vercel.app/api';
+        const ABLY_KEY = 'UNMYag.VcluoA:gkmv1VpeHWmrC7W0NJXRcdQZaRAJP0Z5uAj_dooMjuc';
+        
         let currentUser = null;
-        let ablyClient = null;
-        let allUsers = [];
-        let currentChatUser = null;
+        let selectedUser = null;
+        let ably = null;
+        let channel = null;
+        let users = [];
         let conversations = {};
-        let unreadCounts = {};
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedUser = localStorage.getItem('brumessenger_user');
-            if (savedUser) {
-                try {
-                    currentUser = JSON.parse(savedUser);
-                    initializeChat();
-                } catch (e) {
-                    localStorage.clear();
-                }
-            }
-
-            document.getElementById('loginBtn').addEventListener('click', handleLogin);
-            document.getElementById('signupBtn').addEventListener('click', handleSignup);
-            document.getElementById('showSignupBtn').addEventListener('click', () => {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('signupForm').classList.remove('hidden');
-                clearMessages();
-            });
-            document.getElementById('showLoginBtn').addEventListener('click', () => {
-                document.getElementById('signupForm').classList.add('hidden');
-                document.getElementById('loginForm').classList.remove('hidden');
-                clearMessages();
-            });
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-            document.getElementById('sendBtn').addEventListener('click', sendMessage);
-            document.getElementById('reportBtn').addEventListener('click', openReportModal);
-            document.getElementById('cancelReportBtn').addEventListener('click', closeReportModal);
-            document.getElementById('submitReportBtn').addEventListener('click', submitReport);
+        async function signup() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
             
-            document.getElementById('messageInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            document.getElementById('userSearch').addEventListener('input', filterUsers);
-
-            document.getElementById('loginPassword').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleLogin();
-            });
-        });
-
-        async function handleLogin() {
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
             if (!username || !password) {
-                showError('Please enter username and password');
+                showAuthMessage('Please fill in all fields', 'error');
                 return;
             }
 
             try {
-                const response = await fetch(`${CONFIG.BACKEND_URL}/auth`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'login', username, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    currentUser = data.user;
-                    localStorage.setItem('brumessenger_user', JSON.stringify(currentUser));
-                    showSuccess('✅ Login successful!');
-                    setTimeout(() => initializeChat(), 1000);
-                } else {
-                    showError(data.error || 'Login failed. Check your credentials.');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showError('Connection error. Please check your internet and try again.');
-            }
-        }
-
-        async function handleSignup() {
-            const username = document.getElementById('signupUsername').value.trim();
-            const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('signupPasswordConfirm').value;
-
-            if (!username || !password || !confirmPassword) {
-                showError('Please fill in all fields');
-                return;
-            }
-
-            if (username.length < 3) {
-                showError('Username must be at least 3 characters');
-                return;
-            }
-
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showError('Passwords do not match');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${CONFIG.BACKEND_URL}/auth`, {
+                const response = await fetch(`${API_URL}/auth`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'signup', username, password })
@@ -674,444 +467,429 @@
 
                 const data = await response.json();
 
-                if (response.ok && data.success) {
-                    showSuccess('✅ Account created successfully!');
-                    setTimeout(() => {
-                        document.getElementById('signupForm').classList.add('hidden');
-                        document.getElementById('loginForm').classList.remove('hidden');
-                        document.getElementById('loginUsername').value = username;
-                        clearMessages();
-                    }, 1500);
+                if (data.success) {
+                    showAuthMessage('Account created! Please login.', 'success');
+                    document.getElementById('password').value = '';
                 } else {
-                    showError(data.error || 'Signup failed. Username may be taken.');
+                    showAuthMessage(data.error || 'Signup failed', 'error');
                 }
             } catch (error) {
+                showAuthMessage('Network error. Please try again.', 'error');
                 console.error('Signup error:', error);
-                showError('Connection error. Please try again.');
             }
         }
 
-        async function handleLogout() {
-            if (currentUser) {
-                try {
-                    await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: currentUser.username, status: 'offline' })
-                    });
-                } catch (e) {
-                    console.error('Error updating status on logout:', e);
-                }
+        async function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!username || !password) {
+                showAuthMessage('Please fill in all fields', 'error');
+                return;
             }
-            if (ablyClient) ablyClient.close();
-            localStorage.clear();
-            location.reload();
+
+            try {
+                const response = await fetch(`${API_URL}/auth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'login', username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentUser = data.user;
+                    initializeChat();
+                } else {
+                    showAuthMessage(data.error || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showAuthMessage('Network error. Please try again.', 'error');
+                console.error('Login error:', error);
+            }
         }
 
         async function initializeChat() {
-            document.getElementById('authContainer').style.display = 'none';
-            document.getElementById('chatContainer').style.display = 'flex';
-            document.getElementById('currentUsername').textContent = currentUser.username;
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('chatScreen').classList.remove('hidden');
+            document.getElementById('currentUserName').textContent = currentUser.username;
 
-            // Load conversations from localStorage
-            const saved = localStorage.getItem(`conversations_${currentUser.username}`);
-            if (saved) {
-                try {
-                    conversations = JSON.parse(saved);
-                } catch (e) {
-                    conversations = {};
+            if (currentUser.isAdmin) {
+                document.getElementById('adminPanel').classList.remove('hidden');
+                checkNotifications();
+            }
+
+            ably = new Ably.Realtime(ABLY_KEY);
+            channel = ably.channels.get('brumessenger');
+
+            channel.subscribe('message', (message) => {
+                if (message.data.to === currentUser.username) {
+                    if (selectedUser && message.data.from === selectedUser) {
+                        displayMessage(message.data, 'received');
+                    }
+                    saveMessageToConversation(message.data);
                 }
-            }
+            });
 
-            const savedUnread = localStorage.getItem(`unread_${currentUser.username}`);
-            if (savedUnread) {
-                try {
-                    unreadCounts = JSON.parse(savedUnread);
-                } catch (e) {
-                    unreadCounts = {};
+            channel.subscribe('status', (message) => {
+                if (message.data.username !== currentUser.username) {
+                    updateUserStatus(message.data.username, message.data.status);
                 }
-            }
+            });
 
-            // Initialize Ably
-            try {
-                ablyClient = new Ably.Realtime(CONFIG.ABLY_KEY);
-                console.log('✅ Ably client initialized');
-            } catch (error) {
-                console.error('Error initializing Ably:', error);
-                showError('Failed to connect to messaging service');
-            }
+            channel.publish('status', {
+                username: currentUser.username,
+                status: 'online'
+            });
 
-            // Update status to online
-            try {
-                await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: currentUser.username, status: 'online' })
-                });
-            } catch (e) {
-                console.error('Error updating status:', e);
-            }
-
-            // Load offline messages
-            await loadOfflineMessages();
-
-            // Load users
+            await loadInbox();
             await loadUsers();
-            setInterval(() => loadUsers(), 30000);
-            setInterval(() => updateStatus(), 60000);
         }
 
-        // NEW: Load offline messages from inbox
-        async function loadOfflineMessages() {
+        async function loadInbox() {
             try {
-                const response = await fetch(`${CONFIG.BACKEND_URL}/get-inbox?username=${currentUser.username}`);
+                const response = await fetch(`${API_URL}/get-inbox?username=${currentUser.username}`);
                 const data = await response.json();
 
                 if (data.success && data.messages && data.messages.length > 0) {
-                    console.log(`📬 Received ${data.messages.length} offline messages`);
-                    
-                    // Process each offline message
-                    data.messages.forEach(msg => {
-                        const fromUser = msg.from;
-                        
-                        if (!conversations[fromUser]) {
-                            conversations[fromUser] = [];
-                        }
-                        
-                        // Check if message already exists (avoid duplicates)
-                        const exists = conversations[fromUser].some(m => 
-                            m.timestamp === msg.timestamp && m.text === msg.text
-                        );
-                        
-                        if (!exists) {
-                            conversations[fromUser].push(msg);
-                            
-                            // Increment unread count
-                            unreadCounts[fromUser] = (unreadCounts[fromUser] || 0) + 1;
-                        }
-                    });
-                    
-                    // Save updated conversations and unread counts
-                    localStorage.setItem(`conversations_${currentUser.username}`, JSON.stringify(conversations));
-                    localStorage.setItem(`unread_${currentUser.username}`, JSON.stringify(unreadCounts));
-                    
-                    // Refresh user list to show unread badges
-                    if (allUsers.length > 0) {
-                        displayUsers(allUsers);
+                    for (const msg of data.messages) {
+                        saveMessageToConversation(msg);
                     }
+
+                    await fetch(`${API_URL}/get-inbox?username=${currentUser.username}`, {
+                        method: 'DELETE'
+                    });
                 }
             } catch (error) {
-                console.error('Error loading offline messages:', error);
-            }
-        }
-
-        async function updateStatus() {
-            try {
-                await fetch(`${CONFIG.BACKEND_URL}/update-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: currentUser.username, status: 'online' })
-                });
-            } catch (e) {
-                console.error('Error updating status:', e);
+                console.error('Load inbox error:', error);
             }
         }
 
         async function loadUsers() {
             try {
-                const response = await fetch(`${CONFIG.BACKEND_URL}/get-users`);
+                const response = await fetch(`${API_URL}/get-users?currentUser=${currentUser.username}`);
                 const data = await response.json();
 
                 if (data.success) {
-                    allUsers = data.users.filter(u => u.username !== currentUser.username);
-                    displayUsers(allUsers);
+                    users = data.users;
+                    renderUsers();
                 }
             } catch (error) {
-                console.error('Error loading users:', error);
+                console.error('Load users error:', error);
             }
         }
 
-        function displayUsers(users) {
+        function renderUsers() {
             const usersList = document.getElementById('usersList');
             usersList.innerHTML = '';
 
-            if (users.length === 0) {
-                usersList.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">No users yet</div>';
-                return;
-            }
-
             users.forEach(user => {
-                const userDiv = document.createElement('div');
-                userDiv.className = 'user-item';
-                if (currentChatUser === user.username) {
-                    userDiv.classList.add('active');
+                const userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                if (selectedUser === user.username) {
+                    userItem.classList.add('active');
                 }
 
-                const isOnline = isUserOnline(user.lastActive);
-                const unreadCount = unreadCounts[user.username] || 0;
-
-                userDiv.innerHTML = `
-                    <div class="status-dot ${isOnline ? 'online' : ''}"></div>
-                    <div class="user-name">${escapeHtml(user.username)}</div>
-                    ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
+                userItem.innerHTML = `
+                    <div class="user-info">
+                        <div class="status-dot ${user.status === 'online' ? 'online' : ''}"></div>
+                        <span>${user.username}</span>
+                    </div>
+                    ${user.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
                 `;
 
-                userDiv.addEventListener('click', () => openChat(user.username));
-                usersList.appendChild(userDiv);
+                userItem.onclick = () => selectUser(user.username);
+                usersList.appendChild(userItem);
             });
         }
 
-        async function openChat(username) {
-            currentChatUser = username;
-            
-            // Clear unread count
-            unreadCounts[username] = 0;
-            localStorage.setItem(`unread_${currentUser.username}`, JSON.stringify(unreadCounts));
+        async function selectUser(username) {
+            selectedUser = username;
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('activeChat').classList.remove('hidden');
+            document.getElementById('chatUsername').textContent = username;
+            renderUsers();
 
-            document.getElementById('emptyChatState').style.display = 'none';
-            document.getElementById('activeChatState').classList.remove('hidden');
-            document.getElementById('activeChatState').style.display = 'flex';
-            document.getElementById('chatWithUser').textContent = username;
-
-            // Load messages from server
-            await loadMessagesFromServer(username);
-
-            // Subscribe to real-time updates
-            subscribeToUser(username);
-            
-            // Display conversation
-            displayConversation(username);
-            displayUsers(allUsers);
-            document.getElementById('messageInput').focus();
+            await loadConversationHistory(username);
+            renderMessages();
         }
 
-        // NEW: Load messages from server
-        async function loadMessagesFromServer(username) {
+        async function loadConversationHistory(username) {
             try {
-                const response = await fetch(
-                    `${CONFIG.BACKEND_URL}/get-messages?user1=${currentUser.username}&user2=${username}`
-                );
+                const response = await fetch(`${API_URL}/get-messages?user1=${currentUser.username}&user2=${username}`);
                 const data = await response.json();
 
-                if (data.success && data.messages && data.messages.length > 0) {
-                    // Merge with local messages
-                    conversations[username] = data.messages;
-                    localStorage.setItem(`conversations_${currentUser.username}`, JSON.stringify(conversations));
+                if (data.success) {
+                    const conversationKey = [currentUser.username, username].sort().join('-');
+                    conversations[conversationKey] = data.messages || [];
                 }
             } catch (error) {
-                console.error('Error loading messages from server:', error);
+                console.error('Load conversation error:', error);
             }
         }
 
-        function subscribeToUser(username) {
-            const channelName = [currentUser.username, username].sort().join('-');
-            const channel = ablyClient.channels.get(channelName);
-            
-            channel.subscribe('private-message', (message) => {
-                const msg = message.data;
-                
-                if ((msg.from === username && msg.to === currentUser.username) || 
-                    (msg.from === currentUser.username && msg.to === username)) {
-                    
-                    if (!conversations[username]) {
-                        conversations[username] = [];
-                    }
-                    
-                    const exists = conversations[username].some(m => 
-                        m.timestamp === msg.timestamp && m.text === msg.text
-                    );
-                    
-                    if (!exists) {
-                        conversations[username].push(msg);
-                        localStorage.setItem(`conversations_${currentUser.username}`, JSON.stringify(conversations));
-
-                        if (currentChatUser === username) {
-                            displayConversation(username);
-                        } else if (msg.to === currentUser.username) {
-                            unreadCounts[username] = (unreadCounts[username] || 0) + 1;
-                            localStorage.setItem(`unread_${currentUser.username}`, JSON.stringify(unreadCounts));
-                            displayUsers(allUsers);
-                        }
-                    }
-                }
-            });
-        }
-
-        async function sendMessage() {
-            if (!currentChatUser) return;
-
-            const text = document.getElementById('messageInput').value.trim();
-            if (!text) return;
-
-            const message = {
-                from: currentUser.username,
-                to: currentChatUser,
-                text: text,
-                timestamp: new Date().toISOString()
-            };
-
-            document.getElementById('sendBtn').disabled = true;
-
-            try {
-                // Send via Ably for real-time delivery
-                const channelName = [currentUser.username, currentChatUser].sort().join('-');
-                const channel = ablyClient.channels.get(channelName);
-                
-                await channel.publish('private-message', message);
-
-                // NEW: Also save to server for offline delivery
-                try {
-                    await fetch(`${CONFIG.BACKEND_URL}/send-message`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(message)
-                    });
-                    console.log('✅ Message saved to server');
-                } catch (serverError) {
-                    console.error('Error saving message to server:', serverError);
-                    // Message still sent via Ably, just not stored for offline delivery
-                }
-
-                // Update local conversation
-                if (!conversations[currentChatUser]) {
-                    conversations[currentChatUser] = [];
-                }
-                conversations[currentChatUser].push(message);
-                localStorage.setItem(`conversations_${currentUser.username}`, JSON.stringify(conversations));
-
-                document.getElementById('messageInput').value = '';
-                displayConversation(currentChatUser);
-            } catch (error) {
-                console.error('Error sending message:', error);
-                alert('❌ Failed to send message. Please try again.');
-            } finally {
-                document.getElementById('sendBtn').disabled = false;
-            }
-        }
-
-        function displayConversation(username) {
+        function renderMessages() {
             const container = document.getElementById('messagesContainer');
             container.innerHTML = '';
-            const messages = conversations[username] || [];
 
-            if (messages.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">No messages yet. Start the conversation!</div>';
-                return;
-            }
+            const conversationKey = [currentUser.username, selectedUser].sort().join('-');
+            const messages = conversations[conversationKey] || [];
 
             messages.forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = msg.from === currentUser.username ? 'message sent' : 'message';
-
-                const time = new Date(msg.timestamp).toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                messageDiv.innerHTML = `
-                    <div class="message-content">
-                        <div class="message-sender">${msg.from === currentUser.username ? 'You' : escapeHtml(msg.from)}</div>
-                        <div class="message-text">${escapeHtml(msg.text)}</div>
-                        <div class="message-time">${time}</div>
-                    </div>
-                `;
-
-                container.appendChild(messageDiv);
+                const type = msg.from === currentUser.username ? 'sent' : 'received';
+                displayMessage(msg, type);
             });
 
             container.scrollTop = container.scrollHeight;
         }
 
-        function openReportModal() {
-            if (!currentChatUser) return;
-            document.getElementById('reportUsername').textContent = currentChatUser;
-            document.getElementById('reportModal').classList.add('show');
+        function displayMessage(messageData, type) {
+            const container = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+
+            const time = new Date(messageData.timestamp).toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            messageDiv.innerHTML = `
+                <div class="message-bubble">
+                    <div>${messageData.message}</div>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
         }
 
-        function closeReportModal() {
-            document.getElementById('reportModal').classList.remove('show');
-            document.getElementById('reportReason').value = '';
-        }
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
 
-        async function submitReport() {
-            const reason = document.getElementById('reportReason').value.trim();
-            if (!reason) {
-                alert('Please provide a reason for reporting this user');
-                return;
-            }
+            if (!message || !selectedUser) return;
 
-            if (reason.length < 10) {
-                alert('Please provide more details (at least 10 characters)');
-                return;
-            }
-
-            const report = {
-                reporter: currentUser.username,
-                reported: currentChatUser,
-                reason: reason,
-                conversation: conversations[currentChatUser] || [],
+            const messageData = {
+                from: currentUser.username,
+                to: selectedUser,
+                message,
                 timestamp: new Date().toISOString()
             };
 
             try {
-                const channel = ablyClient.channels.get('admin-reports');
-                await channel.publish('user-report', report);
-                
-                alert('✅ Report submitted successfully!\n\nAdmin will review your report and take appropriate action.');
-                closeReportModal();
+                await fetch(`${API_URL}/send-message`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(messageData)
+                });
+
+                channel.publish('message', messageData);
+
+                displayMessage(messageData, 'sent');
+                saveMessageToConversation(messageData);
+
+                input.value = '';
             } catch (error) {
-                console.error('Error submitting report:', error);
-                alert('❌ Failed to submit report. Please try again.');
+                console.error('Send message error:', error);
             }
         }
 
-        function filterUsers() {
-            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
-            const filteredUsers = allUsers.filter(user => 
-                user.username.toLowerCase().includes(searchTerm)
-            );
-            displayUsers(filteredUsers);
+        function saveMessageToConversation(messageData) {
+            const conversationKey = [messageData.from, messageData.to].sort().join('-');
+            if (!conversations[conversationKey]) {
+                conversations[conversationKey] = [];
+            }
+            conversations[conversationKey].push(messageData);
         }
 
-        function isUserOnline(lastActive) {
-            const now = new Date();
-            const lastActiveDate = new Date(lastActive);
-            const diffMinutes = (now - lastActiveDate) / 1000 / 60;
-            return diffMinutes < 5;
+        function updateUserStatus(username, status) {
+            const user = users.find(u => u.username === username);
+            if (user) {
+                user.status = status;
+                renderUsers();
+            }
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        async function logout() {
+            if (channel) {
+                channel.publish('status', {
+                    username: currentUser.username,
+                    status: 'offline'
+                });
+            }
+
+            try {
+                await fetch(`${API_URL}/update-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: currentUser.username, 
+                        status: 'offline' 
+                    })
+                });
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+
+            if (ably) {
+                ably.close();
+            }
+
+            currentUser = null;
+            selectedUser = null;
+            users = [];
+            conversations = {};
+
+            document.getElementById('chatScreen').classList.add('hidden');
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
         }
 
-        function showError(message) {
-            const error = document.getElementById('authError');
-            error.textContent = message;
-            error.style.display = 'block';
-            setTimeout(() => error.style.display = 'none', 5000);
+        async function viewAllUsers() {
+            try {
+                const response = await fetch(`${API_URL}/admin-actions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'get-all-users',
+                        adminUsername: currentUser.username
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const modal = document.getElementById('adminModal');
+                    const modalTitle = document.getElementById('modalTitle');
+                    const modalContent = document.getElementById('modalContent');
+
+                    modalTitle.textContent = 'All Users & Passwords';
+                    
+                    let html = '';
+                    data.users.forEach(user => {
+                        html += `
+                            <div class="user-card">
+                                <div class="user-card-info">
+                                    <strong>${user.username} ${user.isAdmin ? '👑' : ''}</strong>
+                                    <small>Password: ${user.password}</small><br>
+                                    <small>Status: ${user.status || 'offline'}</small><br>
+                                    <small>Created: ${new Date(user.createdAt).toLocaleDateString()}</small>
+                                </div>
+                                ${!user.isAdmin ? `<button class="delete-user-btn" onclick="deleteUser('${user.username}')">Delete</button>` : ''}
+                            </div>
+                        `;
+                    });
+
+                    modalContent.innerHTML = html || '<p>No users found</p>';
+                    modal.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('View users error:', error);
+                alert('Failed to load users');
+            }
         }
 
-        function showSuccess(message) {
-            const success = document.getElementById('authSuccess');
-            success.textContent = message;
-            success.style.display = 'block';
+        async function viewSignupNotifications() {
+            try {
+                const response = await fetch(`${API_URL}/admin-actions?adminUsername=${currentUser.username}&action=get-notifications`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const modal = document.getElementById('adminModal');
+                    const modalTitle = document.getElementById('modalTitle');
+                    const modalContent = document.getElementById('modalContent');
+
+                    modalTitle.textContent = 'New Signup Notifications';
+                    
+                    let html = '';
+                    data.notifications.forEach(notif => {
+                        html += `
+                            <div class="user-card">
+                                <div class="user-card-info">
+                                    <strong>${notif.username}</strong>
+                                    <small>Password: ${notif.password}</small><br>
+                                    <small>Signed up: ${new Date(notif.timestamp).toLocaleString()}</small>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    modalContent.innerHTML = html || '<p>No new signups</p>';
+                    modal.classList.remove('hidden');
+
+                    document.getElementById('notifBadge').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('View notifications error:', error);
+                alert('Failed to load notifications');
+            }
         }
 
-        function clearMessages() {
-            document.getElementById('authError').style.display = 'none';
-            document.getElementById('authSuccess').style.display = 'none';
+        async function deleteUser(username) {
+            if (!confirm(`Delete user ${username}? This will remove all their messages.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/admin-actions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'delete-user',
+                        adminUsername: currentUser.username,
+                        targetUsername: username
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`User ${username} deleted successfully`);
+                    document.getElementById('adminModal').classList.add('hidden');
+                    await loadUsers();
+                } else {
+                    alert('Failed to delete user: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Delete user error:', error);
+                alert('Failed to delete user');
+            }
+        }
+
+        async function checkNotifications() {
+            try {
+                const response = await fetch(`${API_URL}/admin-actions?adminUsername=${currentUser.username}&action=get-notifications`);
+                const data = await response.json();
+
+                if (data.success && data.notifications && data.notifications.length > 0) {
+                    const badge = document.getElementById('notifBadge');
+                    badge.textContent = data.notifications.length;
+                    badge.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Check notifications error:', error);
+            }
+        }
+
+        function showAuthMessage(message, type) {
+            const authMessage = document.getElementById('authMessage');
+            authMessage.className = type === 'success' ? 'success-message' : 'error-message';
+            authMessage.textContent = message;
+            authMessage.style.display = 'block';
+
+            setTimeout(() => {
+                authMessage.style.display = 'none';
+            }, 5000);
         }
 
         window.addEventListener('beforeunload', () => {
-            if (currentUser && ablyClient) {
-                fetch(`${CONFIG.BACKEND_URL}/update-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: currentUser.username, status: 'offline' }),
-                    keepalive: true
-                });
+            if (currentUser) {
+                navigator.sendBeacon(`${API_URL}/update-status`, JSON.stringify({
+                    username: currentUser.username,
+                    status: 'offline'
+                }));
             }
         });
     </script>
